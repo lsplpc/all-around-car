@@ -1,0 +1,20 @@
+#ifndef __SERIAL_H
+#define __SERIAL_H
+#define SERIAL_RX_BUF_LEN 32
+#include <stdio.h>
+
+extern uint8_t Serial_TxPacket[4];//发包
+extern uint8_t Serial_RxPacket[4];//收包
+
+void Serial_SendByte(uint8_t Byte);
+void Serial_Init(void);
+void Serial_SendArray(uint8_t *Array,uint16_t Length);
+void Serial_SendString(char *String);
+void Serial_SendNumber(uint32_t Number,uint8_t Length);
+void Serial_Printf(char *format,...);
+void Serial_SendPacket(void);
+uint8_t Serial_GetRxFlag(void);//接收确认
+uint8_t* Serial_GetRxBuf(void);
+void Serial_ClearRxBuf(void);
+void USART3_IRQHandler(void);
+#endif
