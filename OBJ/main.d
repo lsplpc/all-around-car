@@ -45,3 +45,4 @@
 ..\obj\main.o: D:\keil5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\main.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdlib.h
 ..\obj\main.o: ..\SYSTEM\CarControl.h
+..\obj\main.o: read.h

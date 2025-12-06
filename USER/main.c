@@ -8,12 +8,16 @@
 #include <string.h>
 #include <stdlib.h>
 #include "CarControl.h"
-
+#include "read.h"
 void car_control_go (int8_t target_SpeedA,int8_t target_SpeedB,int8_t target_SpeedC,int8_t target_SpeedD);
+uint8_t gw_gray_serial_read(void);//读不出来就看看这个
  int8_t SpeedA=0;
  int8_t SpeedB=0;
  int8_t SpeedC=0;
  int8_t SpeedD=0;
+
+unsigned char Digtal;
+unsigned char rx_buff[256]={0};//存储灰度数据
 
  uint8_t KeyNun;
  float Limit_value;
@@ -25,6 +29,7 @@ int main(void)
 	Motor_Init();
 	Key_Init();
 	Serial_Init();//初始化USART
+	read_Init();//初始化灰度
 	Encoder_Init_TIM2();
 	Encoder_Init_TIM4();
 	Encoder_Init_TIM8();
@@ -35,34 +40,28 @@ int main(void)
 	PID_Init(&playpid, 0.7 , 0.1 , 0.1 , 100);
 	Serial_SendString("可以了");
 	 
-while(1)
- {  
-	Parse_KeyCmd();
-    car_control_go (target_SpeedA,target_SpeedB,target_SpeedC,target_SpeedD);
-    delay_ms(100);//0.1秒
-
- }
+//while(1)
+// {  
+//	Parse_KeyCmd();
+//    car_control_go (target_SpeedA,target_SpeedB,target_SpeedC,target_SpeedD);
+//    delay_ms(100);//0.1秒
+// }
+	 for(;;)
+	{
+		Digtal=gw_gray_serial_read();
+		sprintf((char *)rx_buff,"Digtal %d-%d-%d-%d-%d-%d-%d-%d\r\n",(Digtal>>0)&0x01,(Digtal>>1)&0x01,(Digtal>>2)&0x01,(Digtal>>3)&0x01,(Digtal>>4)&0x01,(Digtal>>5)&0x01,(Digtal>>6)&0x01,(Digtal>>7)&0x01);
+		Serial_SendString((char *)rx_buff);
+		memset(rx_buff,0,256);
+		delay_ms(1);
+	}
+	 
+	 
+ 
 
  
 
 }
 
-/*int key_contral (void)
-{
-KeyNun = Key_GetNum();
-	 if(KeyNun==1)
-	 {
-	     target_Speed+=20;
-	 
-		 if(target_Speed>100)
-		 {
-			 target_Speed=-100;
-		 }
-		 
-	 }
-
- return target_Speed;
-}	*/
 
 void car_control_go (int8_t target_SpeedA,int8_t target_SpeedB,int8_t target_SpeedC,int8_t target_SpeedD)
 {
@@ -93,25 +92,45 @@ void car_control_go (int8_t target_SpeedA,int8_t target_SpeedB,int8_t target_Spe
      Motor_SetSpeedC(SpeedC/2.3985f);
 	 Motor_SetSpeedD(SpeedD/2.3985f);
 	 
-	 printf("pwmA:%d",SpeedA);
-	 printf("pwmB:%d",SpeedB);
-	 printf("pwmC:%d",SpeedC);
-	 printf("pwmD:%d\r\n",SpeedD);
+//	 printf("pwmA:%d",SpeedA);
+//	 printf("pwmB:%d",SpeedB);
+//	 printf("pwmC:%d",SpeedC);
+//	 printf("pwmD:%d\r\n",SpeedD);
 
-	 printf("target:%d",target_SpeedA);
-	 printf("target:%d",target_SpeedB);
-	 printf("target:%d",target_SpeedC);
-	 printf("target:%d\r\n",target_SpeedD);
-	 
-	 
-     printf("nowA:%f(rad)\r\n",Motor_SpeedA);
-	 printf("nowB:%f(rad)\r\n",Motor_SpeedB);
-	 printf("nowC:%f(rad)\r\n",Motor_SpeedC);
-	 printf("nowD:%f(rad)\r\n",Motor_SpeedD);
+//	 printf("target:%d",target_SpeedA);
+//	 printf("target:%d",target_SpeedB);
+//	 printf("target:%d",target_SpeedC);
+//	 printf("target:%d\r\n",target_SpeedD);
+//	 
+//	 
+//     printf("nowA:%f(rad)\r\n",Motor_SpeedA);
+//	 printf("nowB:%f(rad)\r\n",Motor_SpeedB);
+//	 printf("nowC:%f(rad)\r\n",Motor_SpeedC);
+//	 printf("nowD:%f(rad)\r\n",Motor_SpeedD);
 
 
 }
 
+uint8_t gw_gray_serial_read()
+{
+	uint8_t ret = 0;
+	uint8_t i;
 
+	for (i = 0; i < 8; ++i) {
+		/* 输出时钟下降沿 */
+		GPIO_ResetBits(GPIOB, GPIO_Pin_9);
+		delay_us(5);
+		//避免GPIO翻转过快导致反应不及时
+		ret |= GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_8) << i;
+
+		/* 输出时钟上升沿,让传感器更新数据*/
+		GPIO_SetBits(GPIOB, GPIO_Pin_9);
+	
+		/* 延迟需要在5us左右 */
+		delay_us(5);
+	}
+	
+	return ret;
+}
 
 
