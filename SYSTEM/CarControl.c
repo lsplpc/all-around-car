@@ -24,10 +24,10 @@ void Parse_KeyCmd(void) {
      
  
         if (strstr(cmd, "1") != NULL && (cmd[1] == '\r' || cmd[1] == '\n' || cmd[1] == '\0')){
-            target_SpeedA=100;  target_SpeedB=100 ; target_SpeedC=100  ;target_SpeedD=100 ;
+            target_SpeedA=30;  target_SpeedB=30 ; target_SpeedC=30  ;target_SpeedD=30 ;
             Serial_SendString("执行：前进（麦克纳姆轮全向）\r\n");
         } else if (strstr(cmd, "2") != NULL && (cmd[1] == '\r' || cmd[1] == '\n' || cmd[1] == '\0')) {
-           target_SpeedA=-100;  target_SpeedB=-100 ; target_SpeedC=-100  ;target_SpeedD=-100 ;
+           target_SpeedA=-30;  target_SpeedB=-30 ; target_SpeedC=-30  ;target_SpeedD=-30 ;
             Serial_SendString("执行：后退（麦克纳姆轮全向）\r\n");
         } else if (strstr(cmd, "3") != NULL && (cmd[1] == '\r' || cmd[1] == '\n' || cmd[1] == '\0')) {
             target_SpeedA=-100;  target_SpeedB=100 ; target_SpeedC=-100  ;target_SpeedD=100 ;

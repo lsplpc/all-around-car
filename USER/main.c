@@ -12,10 +12,10 @@
 void car_control_go (int8_t target_SpeedA,int8_t target_SpeedB,int8_t target_SpeedC,int8_t target_SpeedD);
 uint8_t gw_gray_serial_read(void);//读不出来就看看这个
 
- int8_t SpeedA=0;
- int8_t SpeedB=0;
- int8_t SpeedC=0;
- int8_t SpeedD=0;
+ int16_t SpeedA=0;
+ int16_t SpeedB=0;
+ int16_t SpeedC=0;
+ int16_t SpeedD=0;
  float cha=0;
 unsigned char Digtal;
 unsigned char rx_buff[256]={0};//存储灰度数据
@@ -40,13 +40,7 @@ int main(void)
 	CarControl_Init();
 	PID_Init(&playpid, 0.7 , 0.1 , 0.1 , 100);
 	Serial_SendString("可以了");
-	 
-//while(1)
-// {  
-//	Parse_KeyCmd();
-//    car_control_go (target_SpeedA,target_SpeedB,target_SpeedC,target_SpeedD);
-//    delay_ms(100);//0.1秒
-// }
+
 	 for(;;)
 	{
 		Digtal=gw_gray_serial_read();
@@ -54,13 +48,14 @@ int main(void)
 	    Serial_SendString((char *)rx_buff);
 	    memset(rx_buff,0,256);
 	    cha = xunji (Digtal);
+		target_SpeedA=30;  target_SpeedB=30 ; target_SpeedC=30  ;target_SpeedD=30 ;
+		car_control_go (target_SpeedA+cha,target_SpeedB+cha,target_SpeedC-cha,target_SpeedD-cha);
 		delay_ms(1);
 	}
 	 
-	 
- 
 
- 
+
+
 
 }
 
@@ -72,13 +67,13 @@ void car_control_go (int8_t target_SpeedA,int8_t target_SpeedB,int8_t target_Spe
      int encoder_countA = Read_EncoderA();
      int encoder_countB = Read_EncoderB();
 	 int encoder_countC = Read_EncoderC();
-	 int encoder_countD = Read_EncoderF();
+	 int encoder_countD = Read_EncoderF()*2;
 
-//	 float Motor_Speed = (float)encoder_countA/30/13/4*10;//(float)encoder_count：明确将整数转换为浮点型。
-	 float Motor_SpeedA = (float)encoder_countA;
-	 float Motor_SpeedB = (float)encoder_countB;
-     float Motor_SpeedC = (float)encoder_countC;
-	 float Motor_SpeedD = (float)encoder_countD;
+//	 float Motor_Speed = (float)encoder_countA/30/13/4*1000;//(float)encoder_count：明确将整数转换为浮点型。
+	 float Motor_SpeedA = (float)encoder_countA/30/13/4*1000;
+	 float Motor_SpeedB = (float)encoder_countB/30/13/4*1000;
+     float Motor_SpeedC = (float)encoder_countC/30/13/4*1000;
+	 float Motor_SpeedD = (float)encoder_countD/30/13/4*1000;
 	 
 //	 target_Speed=key_contral ();(改变速度)
 	 
@@ -89,26 +84,26 @@ void car_control_go (int8_t target_SpeedA,int8_t target_SpeedB,int8_t target_Spe
 	SpeedC = PID_Incremental_Calc(&playpid,target_SpeedC, Motor_SpeedC);//速度环
 	SpeedD = PID_Incremental_Calc(&playpid,target_SpeedD, Motor_SpeedD);//速度环	
 	
-	 Motor_SetSpeedA(SpeedA/2.3985f);
-	 Motor_SetSpeedB(SpeedB/2.3985f);
-     Motor_SetSpeedC(SpeedC/2.3985f);
-	 Motor_SetSpeedD(SpeedD/2.3985f);
+	 Motor_SetSpeedA(SpeedA);
+	 Motor_SetSpeedB(SpeedB);
+     Motor_SetSpeedC(SpeedC);
+	 Motor_SetSpeedD(SpeedD);
 	 
-//	 printf("pwmA:%d",SpeedA);
-//	 printf("pwmB:%d",SpeedB);
-//	 printf("pwmC:%d",SpeedC);
-//	 printf("pwmD:%d\r\n",SpeedD);
+	 printf("pwmA:%d",SpeedA);
+	 printf("pwmB:%d",SpeedB);
+	 printf("pwmC:%d",SpeedC);
+	 printf("pwmD:%d\r\n",SpeedD);
 
-//	 printf("target:%d",target_SpeedA);
-//	 printf("target:%d",target_SpeedB);
-//	 printf("target:%d",target_SpeedC);
-//	 printf("target:%d\r\n",target_SpeedD);
-//	 
-//	 
-//   printf("nowA:%f(rad)\r\n",Motor_SpeedA);
-//	 printf("nowB:%f(rad)\r\n",Motor_SpeedB);
-//	 printf("nowC:%f(rad)\r\n",Motor_SpeedC);
-//	 printf("nowD:%f(rad)\r\n",Motor_SpeedD);
+	 printf("target:%d",target_SpeedA);
+	 printf("target:%d",target_SpeedB);
+	 printf("target:%d",target_SpeedC);
+	 printf("target:%d\r\n",target_SpeedD);
+	 
+	 
+     printf("nowA:%.1f(rad)\r\n",Motor_SpeedA);
+	 printf("nowB:%.1f(rad)\r\n",Motor_SpeedB);
+	 printf("nowC:%.1f(rad)\r\n",Motor_SpeedC);
+	 printf("nowD:%.1f(rad)\r\n",Motor_SpeedD);
 
 
 }
