@@ -34,3 +34,6 @@
 ..\obj\read.o: ..\FWLIB\inc\stm32f4xx_dac.h
 ..\obj\read.o: ..\FWLIB\inc\stm32f4xx_dcmi.h
 ..\obj\read.o: ..\FWLIB\inc\stm32f4xx_fsmc.h
+..\obj\read.o: ..\SYSTEM\PID.h
+..\obj\read.o: ..\SYSTEM\Serial.h
+..\obj\read.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdio.h

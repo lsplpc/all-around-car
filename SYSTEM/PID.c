@@ -79,7 +79,7 @@ float PID_Incremental_Calc(PID *pid, float Target_val, float Actual_val) //循迹
 	if(pid->output > pid->outputmax )    pid->output = pid->outputmax;
 	if(pid->output < - pid->outputmax )  pid->output = -pid->outputmax;
 	
-	return pid->output ;   //输出为pwm值
+	return pid->output ;   //输出差速
 }
 
 //PID初始化

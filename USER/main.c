@@ -11,11 +11,12 @@
 #include "read.h"
 void car_control_go (int8_t target_SpeedA,int8_t target_SpeedB,int8_t target_SpeedC,int8_t target_SpeedD);
 uint8_t gw_gray_serial_read(void);//读不出来就看看这个
+
  int8_t SpeedA=0;
  int8_t SpeedB=0;
  int8_t SpeedC=0;
  int8_t SpeedD=0;
-
+ float cha=0;
 unsigned char Digtal;
 unsigned char rx_buff[256]={0};//存储灰度数据
 
@@ -50,8 +51,9 @@ int main(void)
 	{
 		Digtal=gw_gray_serial_read();
 		sprintf((char *)rx_buff,"Digtal %d-%d-%d-%d-%d-%d-%d-%d\r\n",(Digtal>>0)&0x01,(Digtal>>1)&0x01,(Digtal>>2)&0x01,(Digtal>>3)&0x01,(Digtal>>4)&0x01,(Digtal>>5)&0x01,(Digtal>>6)&0x01,(Digtal>>7)&0x01);
-		Serial_SendString((char *)rx_buff);
-		memset(rx_buff,0,256);
+	    Serial_SendString((char *)rx_buff);
+	    memset(rx_buff,0,256);
+	    cha = xunji (Digtal);
 		delay_ms(1);
 	}
 	 
@@ -103,7 +105,7 @@ void car_control_go (int8_t target_SpeedA,int8_t target_SpeedB,int8_t target_Spe
 //	 printf("target:%d\r\n",target_SpeedD);
 //	 
 //	 
-//     printf("nowA:%f(rad)\r\n",Motor_SpeedA);
+//   printf("nowA:%f(rad)\r\n",Motor_SpeedA);
 //	 printf("nowB:%f(rad)\r\n",Motor_SpeedB);
 //	 printf("nowC:%f(rad)\r\n",Motor_SpeedC);
 //	 printf("nowD:%f(rad)\r\n",Motor_SpeedD);
