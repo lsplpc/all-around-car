@@ -30,7 +30,7 @@ float xunji (unsigned char Digtal)
   int A1=0,A2=0,A3=0,A4=0,A5=0,A6=0,A7=0,A8=0;
   float z = 0 ,xun=0 ,last_xun,cha=0;
   PID readpid;
-  Speed_PID_Init(&readpid, 5 , 0.1 , 0.1 , 100);
+  Speed_PID_Init(&readpid, 10*0.6 , 3 , 8*0.3, 45);//15为P最终结果    看看10 与 30哪个黑线在红光里面的时候多
   
 	if( 0 <((Digtal>>0)&0x01)) {A1=0;}else{A1=1;z++;}//C 语言中，<（关系运算符）的优先级 高于 &（按位与运算符
     if( 0 <((Digtal>>1)&0x01)) {A2=0;}else{A2=1;z++;}

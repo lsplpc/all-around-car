@@ -38,7 +38,7 @@ int main(void)
 	Encoder_Init_TIM5();
 	Encoder_Init_TIM9();
 	CarControl_Init();
-	PID_Init(&playpid, 0.7 , 0.1 , 0.1 , 100);
+	PID_Init(&playpid, 3.5 , 0.1 , 0.2 , 100);
 	Serial_SendString("可以了");
 
 	 for(;;)
@@ -48,7 +48,7 @@ int main(void)
 	    Serial_SendString((char *)rx_buff);
 	    memset(rx_buff,0,256);
 	    cha = xunji (Digtal);
-		target_SpeedA=30;  target_SpeedB=30 ; target_SpeedC=30  ;target_SpeedD=30 ;
+		target_SpeedA=20;  target_SpeedB=20 ; target_SpeedC=20  ;target_SpeedD=20 ;//最大值在30附近25
 		car_control_go (target_SpeedA+cha,target_SpeedB+cha,target_SpeedC-cha,target_SpeedD-cha);
 		delay_ms(1);
 	}
@@ -66,7 +66,7 @@ void car_control_go (int8_t target_SpeedA,int8_t target_SpeedB,int8_t target_Spe
 
      int encoder_countA = Read_EncoderA();
      int encoder_countB = Read_EncoderB();
-	 int encoder_countC = Read_EncoderC();
+	 int encoder_countC = -Read_EncoderC();
 	 int encoder_countD = Read_EncoderF()*2;
 
 //	 float Motor_Speed = (float)encoder_countA/30/13/4*1000;//(float)encoder_count：明确将整数转换为浮点型。
